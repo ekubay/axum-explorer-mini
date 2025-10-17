@@ -2,9 +2,12 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { User, Calendar, Package, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Add this import
+
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -90,14 +93,18 @@ const Dashboard = () => {
       {user?.role === 'provider' && (
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Provider Dashboard</h2>
+          
           <div className="text-center py-8">
             <Settings className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Manage Your Services</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Set Up Your Service</h3>
             <p className="text-gray-600 mb-4">
-              Set up your service offerings and start connecting with travelers.
+              Register your business to start offering services to travelers.
             </p>
-            <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-axum-green hover:bg-green-700">
-              Add Service
+            <button 
+              onClick={() => navigate('/provider-register')} // FIX: Use navigate instead of window.location
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-axum-green hover:bg-green-700"
+            >
+              Register Your Service
             </button>
           </div>
         </div>

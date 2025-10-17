@@ -10,6 +10,9 @@ import Register from './pages/Register';
 import Providers from './pages/Providers';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/Common/ProtectedRoute';
+import ProviderRegister from './pages/ProviderRegister';
+
+
 
 // In frontend/src/App.jsx - wrap everything in error boundary
 function ErrorBoundary({ children }) {
@@ -50,6 +53,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Dashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/provider-register" 
+                element={
+                  <ProtectedRoute>
+                    <ProviderRegister />
                   </ProtectedRoute>
                 } 
               />
