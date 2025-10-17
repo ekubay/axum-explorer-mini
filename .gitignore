@@ -1,5 +1,9 @@
-# Object file
-*.o
 
-# Ada Library Information
-*.ali
+# .gitignore
+node_modules/
+dist/
+.env
+.DS_Store
+*.log
+coverage/
+.nyc_output/
