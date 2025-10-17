@@ -21,8 +21,15 @@ export class UserService {
     }
 
     const passwordHash = await this.hashPassword(password);
+    
+    // Create user with isVerified: true for new registrations
     const user = UserEntity.create(name, email, passwordHash, role, phone);
-    const savedUser = await this.userRepository.save(user);
+    const userWithVerification = {
+      ...user,
+      isVerified: true // Auto-verify new registrations
+    };
+    
+    const savedUser = await this.userRepository.save(userWithVerification);
     const token = this.generateToken(savedUser);
 
     return { user: savedUser, token };

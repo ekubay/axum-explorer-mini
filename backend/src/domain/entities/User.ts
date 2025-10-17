@@ -24,7 +24,7 @@ export class UserEntity implements User {
     public email: string,
     public passwordHash: string,
     public role: UserRole,
-    public isVerified: boolean = false,
+    public isVerified: boolean = true, // ← Change default to true
     public phone?: string,
     public createdAt: Date = new Date(),
     public updatedAt: Date = new Date()
@@ -37,7 +37,7 @@ export class UserEntity implements User {
       email,
       passwordHash,
       role,
-      false,
+      true, // ← Change this to TRUE to auto-verify new users
       phone
     );
   }

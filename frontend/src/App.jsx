@@ -11,8 +11,30 @@ import Providers from './pages/Providers';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/Common/ProtectedRoute';
 
+// In frontend/src/App.jsx - wrap everything in error boundary
+function ErrorBoundary({ children }) {
+  const [hasError, setHasError] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleError = (error) => {
+      console.error('React Error:', error);
+      setHasError(true);
+    };
+    
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+
+  if (hasError) {
+    return <div>Something went wrong. Check console for errors.</div>;
+  }
+
+  return children;
+}
+
 function App() {
   return (
+   <ErrorBoundary>
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -37,6 +59,7 @@ function App() {
         </div>
       </Router>
     </AuthProvider>
+  </ErrorBoundary>
   );
 }
 

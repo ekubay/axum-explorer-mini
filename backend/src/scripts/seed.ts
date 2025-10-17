@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import { Database } from '../infrastructure/database/database';
 import { UserModel } from '../infrastructure/database/mongooseSchemas';
 import { UserRole } from '../domain/entities/User';
+import bcrypt from 'bcryptjs';
+import config from '../application/config';
 
 async function seedDatabase() {
   try {
@@ -12,11 +14,15 @@ async function seedDatabase() {
     // Clear existing data
     await UserModel.deleteMany({});
 
+    // Hash passwords properly
+    const adminPasswordHash = await bcrypt.hash('admin123', config.auth.bcryptRounds);
+    const touristPasswordHash = await bcrypt.hash('tourist123', config.auth.bcryptRounds);
+
     // Create admin user
     const adminUser = await UserModel.create({
       name: 'Admin User',
       email: 'admin@axumexplorer.com',
-      passwordHash: '$2a$12$LQv3c1yqBWVHxkd0L6kZrOaRWF4A5a6Ae9VKJ2K9K9p9p9p9p9p9p', // hashed "admin123"
+      passwordHash: adminPasswordHash,
       role: UserRole.ADMIN,
       isVerified: true,
       phone: '+251911223344'
@@ -26,7 +32,7 @@ async function seedDatabase() {
     const touristUser = await UserModel.create({
       name: 'Sample Tourist',
       email: 'tourist@example.com',
-      passwordHash: '$2a$12$LQv3c1yqBWVHxkd0L6kZrOaRWF4A5a6Ae9VKJ2K9K9p9p9p9p9p9p', // hashed "tourist123"
+      passwordHash: touristPasswordHash,
       role: UserRole.TOURIST,
       isVerified: true,
       phone: '+251944556677'

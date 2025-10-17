@@ -15,6 +15,8 @@ import { ServiceProviderController } from './interfaces/controllers/ServiceProvi
 import userRoutes from './interfaces/routes/userRoutes';
 import bookingRoutes from './interfaces/routes/bookingRoutes';
 import providerRoutes from './interfaces/routes/providerRoutes';
+import { AuthMiddleware } from './interfaces/middleware/auth';
+
 
 export class App {
   public express: express.Application;
@@ -27,8 +29,12 @@ export class App {
   }
 
   private setupMiddleware(): void {
-    this.express.use(cors());
-    this.express.use(express.json());
+  this.express.use(cors({
+    origin: 'http://localhost:3001',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+  }));
+  this.express.use(express.json());
   }
 
   private setupDependencies(): void {
@@ -53,22 +59,35 @@ export class App {
     this.express.set('providerController', providerController);
   }
 
-  private setupRoutes(): void {
-    // Health check
-    this.express.get('/api/health', (req, res) => {
-      res.json({ 
-        status: 'OK', 
-        timestamp: new Date().toISOString(),
-        service: 'Axum Explorer Mini API'
-      });
+  // In src/app.ts - replace the setupRoutes method
+private setupRoutes(): void {
+  // Health check
+  this.express.get('/api/health', (req, res) => {
+    res.json({ 
+      status: 'OK', 
+      timestamp: new Date().toISOString(),
+      service: 'Axum Explorer Mini API'
     });
+  });
 
-    // Mount routes
-    this.express.use('/api/auth', userRoutes(this.express));
-    this.express.use('/api/bookings', bookingRoutes(this.express));
-    this.express.use('/api/providers', providerRoutes(this.express));
-  }
+  // Get controller instances
+  const userController = this.express.get('userController');
+  const bookingController = this.express.get('bookingController');
+  const providerController = this.express.get('providerController');
 
+  // AUTH ROUTES
+  this.express.post('/api/auth/register', (req, res) => userController.register(req, res));
+  this.express.post('/api/auth/login', (req, res) => userController.login(req, res));
+  this.express.get('/api/auth/profile', AuthMiddleware.authenticate, (req, res) => userController.getProfile(req, res));
+
+  // PROVIDER ROUTES
+  this.express.post('/api/providers/register', AuthMiddleware.authenticate, (req, res) => providerController.register(req, res));
+  this.express.get('/api/providers', (req, res) => providerController.listProviders(req, res));
+  this.express.get('/api/providers/:id', (req, res) => providerController.getProviderById(req, res));
+
+  // Add more routes as needed...
+}
+    
   public async start(port: number = 3000): Promise<void> {
     const db = Database.getInstance();
     await db.connect();

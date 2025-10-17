@@ -31,9 +31,22 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await register(formData);
-    if (result.success) {
-      navigate('/dashboard');
+    console.log('🎯 Form submitted!');
+    console.log('📦 Form data:', formData);
+    
+    try {
+      console.log('🔄 Calling register function...');
+      const result = await register(formData);
+      console.log('✅ Register result:', result);
+      
+      if (result.success) {
+        console.log('🚀 Redirecting to dashboard...');
+        navigate('/dashboard');
+      } else {
+        console.log('❌ Register failed:', result.error);
+      }
+    } catch (error) {
+      console.log('💥 Register error:', error);
     }
   };
 
@@ -178,6 +191,16 @@ const Register = () => {
       </div>
     </div>
   );
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log('Form submitted with data:', formData); // Add this line
+  
+  const result = await register(formData);
+  if (result.success) {
+    navigate('/dashboard');
+  }
 };
 
 export default Register;
