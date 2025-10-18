@@ -2,7 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 import { Database } from './infrastructure/database/database';
-import { UserModel, ServiceProviderModel, BookingModel } from './infrastructure/database/mongooseSchemas';
+import { UserModel, ServiceProviderModel, BookingModel, CommissionModel } from './infrastructure/database/mongooseSchemas';
 import { MongooseUserRepository } from './infrastructure/repositories/MongooseUserRepository';
 import { MongooseServiceProviderRepository } from './infrastructure/repositories/MongooseServiceProviderRepository';
 import { MongooseBookingRepository } from './infrastructure/repositories/MongooseBookingRepository';
@@ -18,6 +18,8 @@ import providerRoutes from './interfaces/routes/providerRoutes';
 import { AuthMiddleware } from './interfaces/middleware/auth';
 import { AdminController } from './interfaces/controllers/AdminController';
 import adminRoutes from './interfaces/routes/adminRoutes';
+import { MongooseCommissionRepository } from './infrastructure/repositories/MongooseCommissionRepository';
+import { CommissionService } from './domain/services/CommissionService';
 
 export class App {
   public express: express.Application;
@@ -39,23 +41,25 @@ export class App {
   }
 
   private setupDependencies(): void {
-    // 1. First create all repositories
+    // Repository instances
     const userRepository = new MongooseUserRepository(UserModel);
     const providerRepository = new MongooseServiceProviderRepository(ServiceProviderModel);
     const bookingRepository = new MongooseBookingRepository(BookingModel);
+    const commissionRepository = new MongooseCommissionRepository(CommissionModel); // Add this
 
-    // 2. Then create all services (depend on repositories)
+    // Service instances
     const userService = new UserService(userRepository);
-    const bookingService = new BookingService(bookingRepository);
+    const commissionService = new CommissionService(commissionRepository); // Add this
+    const bookingService = new BookingService(bookingRepository, commissionService); // Now 2 arguments
     const providerService = new ServiceProviderService(providerRepository);
 
-    // 3. Then create all controllers (depend on services)
+    // Controller instances
     const userController = new UserController(userService);
     const bookingController = new BookingController(bookingService);
     const providerController = new ServiceProviderController(providerService);
-    const adminController = new AdminController(providerService); // ← This comes AFTER providerService
+    const adminController = new AdminController(providerService);
 
-    // 4. Store everything in app
+    // Store in app for route access
     this.express.set('userController', userController);
     this.express.set('bookingController', bookingController);
     this.express.set('providerController', providerController);

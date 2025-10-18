@@ -44,6 +44,58 @@ const serviceProviderSchema = new Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
+// commission schema
+const commissionSchema = new Schema({
+  bookingId: { type: Schema.Types.ObjectId, ref: 'Booking', required: true },
+  serviceProviderId: { type: Schema.Types.ObjectId, ref: 'ServiceProvider', required: true },
+  serviceType: {
+    type: String,
+    enum: ['hotel', 'car_rental', 'guide'],
+    required: true
+  },
+  amount: { type: Number, required: true },
+  commissionRate: { type: Number, required: true },
+  providerEarnings: { type: Number, required: true },
+  platformEarnings: { type: Number, required: true },
+  status: {
+    type: String,
+    enum: ['pending', 'paid', 'cancelled'],
+    default: 'pending'
+  },
+  paymentDate: Date,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+// export const CommissionModel = mongoose.model('Commission', commissionSchema);
+// const serviceProviderSchema = new Schema({
+//   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+//   businessName: { type: String, required: true },
+//   description: String,
+//   type: {
+//     type: String,
+//     enum: ['hotel', 'car_rental', 'guide'],
+//     required: true
+//   },
+//   contactInfo: {
+//     phone: { type: String, required: true },
+//     email: { type: String, required: true },
+//     address: { type: String, required: true }
+//   },
+//   verificationStatus: {
+//     type: String,
+//     enum: ['pending', 'verified', 'rejected'],
+//     default: 'pending'
+//   },
+//   location: {
+//     latitude: { type: Number, required: true },
+//     longitude: { type: Number, required: true }
+//   },
+//   isActive: { type: Boolean, default: true },
+//   createdAt: { type: Date, default: Date.now },
+//   updatedAt: { type: Date, default: Date.now }
+// });
+  // booking schema
 const bookingSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   packageName: { type: String, required: true },
@@ -79,3 +131,4 @@ const bookingSchema = new Schema({
 export const UserModel = mongoose.model('User', userSchema);
 export const ServiceProviderModel = mongoose.model('ServiceProvider', serviceProviderSchema);
 export const BookingModel = mongoose.model('Booking', bookingSchema);
+export const CommissionModel = mongoose.model('Commission', commissionSchema);

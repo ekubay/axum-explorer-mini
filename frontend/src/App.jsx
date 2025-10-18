@@ -12,11 +12,11 @@ import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/Common/ProtectedRoute';
 import ProviderRegister from './pages/ProviderRegister';
 import AdminDashboard from './pages/AdminDashboard';
+import CreateBooking from './pages/CreateBooking';
 
 
 
-
-// In frontend/src/App.jsx - wrap everything in error boundary
+// wrap everything in error boundary
 function ErrorBoundary({ children }) {
   const [hasError, setHasError] = React.useState(false);
 
@@ -61,6 +61,14 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
+              <Route 
+                  path="/create-booking" 
+                  element={
+                    <ProtectedRoute>
+                      <CreateBooking />
+                    </ProtectedRoute>
+                  } 
+                />
               <Route 
                 path="/admin" 
                 element={
