@@ -62,3 +62,23 @@ A modern travel platform connecting tourists with local service providers in Axu
 ```bash
 git clone https://github.com/ekubay/axum-explorer-mini.git
 cd axum-explorer-mini
+
+### 2. Backend Setup
+```bash
+cd backend
+
+# Install dependencies
+npm install
+
+# Environment configuration
+cp .env.example .env
+# Edit .env with your configuration
+
+# Build the project
+npm run build
+
+# Seed the database
+npm run seed
+
+# Start development server
+npm run dev
