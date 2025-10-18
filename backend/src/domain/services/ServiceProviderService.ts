@@ -78,4 +78,30 @@ export class ServiceProviderService {
   async getProviderByUserId(userId: string): Promise<ServiceProvider | null> {
     return await this.providerRepository.findByUserId(userId);
   }
+  async getProvidersByStatus(status: string): Promise<ServiceProvider[]> {
+   return await this.providerRepository.findByVerificationStatus(status);
+  }
+  async rejectProvider(providerId: string): Promise<ServiceProvider> {
+    const provider = await this.providerRepository.findById(providerId);
+    if (!provider) {
+      throw new Error('Provider not found');
+    }
+
+    const providerEntity = new ServiceProviderEntity(
+      provider.id,
+      provider.userId,
+      provider.businessName,
+      provider.description,
+      provider.type,
+      provider.contactInfo,
+      provider.verificationStatus,
+      provider.location,
+      provider.isActive,
+      provider.createdAt,
+      provider.updatedAt
+    );
+
+    providerEntity.reject();
+    return await this.providerRepository.save(providerEntity);
+  }
 }

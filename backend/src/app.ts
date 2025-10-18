@@ -16,7 +16,8 @@ import userRoutes from './interfaces/routes/userRoutes';
 import bookingRoutes from './interfaces/routes/bookingRoutes';
 import providerRoutes from './interfaces/routes/providerRoutes';
 import { AuthMiddleware } from './interfaces/middleware/auth';
-
+import { AdminController } from './interfaces/controllers/AdminController';
+import adminRoutes from './interfaces/routes/adminRoutes';
 
 export class App {
   public express: express.Application;
@@ -38,25 +39,27 @@ export class App {
   }
 
   private setupDependencies(): void {
-    // Repository instances
+    // 1. First create all repositories
     const userRepository = new MongooseUserRepository(UserModel);
     const providerRepository = new MongooseServiceProviderRepository(ServiceProviderModel);
     const bookingRepository = new MongooseBookingRepository(BookingModel);
 
-    // Service instances
+    // 2. Then create all services (depend on repositories)
     const userService = new UserService(userRepository);
     const bookingService = new BookingService(bookingRepository);
     const providerService = new ServiceProviderService(providerRepository);
 
-    // Controller instances
+    // 3. Then create all controllers (depend on services)
     const userController = new UserController(userService);
     const bookingController = new BookingController(bookingService);
-    const providerController = new ServiceProviderController(providerService); // Fixed: only one parameter
+    const providerController = new ServiceProviderController(providerService);
+    const adminController = new AdminController(providerService); // ← This comes AFTER providerService
 
-    // Store in app for route access
+    // 4. Store everything in app
     this.express.set('userController', userController);
     this.express.set('bookingController', bookingController);
     this.express.set('providerController', providerController);
+    this.express.set('adminController', adminController);
   }
 
   // In src/app.ts - replace the setupRoutes method
@@ -69,7 +72,9 @@ private setupRoutes(): void {
       service: 'Axum Explorer Mini API'
     });
   });
-
+  // Admin routes
+  const adminController = this.express.get('adminController') as AdminController;
+  this.express.use('/api/admin', adminRoutes(adminController));
   // Get controller instances
   const userController = this.express.get('userController');
   const bookingController = this.express.get('bookingController');

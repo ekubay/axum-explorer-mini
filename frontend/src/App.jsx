@@ -11,6 +11,8 @@ import Providers from './pages/Providers';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/Common/ProtectedRoute';
 import ProviderRegister from './pages/ProviderRegister';
+import AdminDashboard from './pages/AdminDashboard';
+
 
 
 
@@ -48,6 +50,9 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/providers" element={<Providers />} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+
               <Route 
                 path="/dashboard" 
                 element={
@@ -57,6 +62,14 @@ function App() {
                 } 
               />
               <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+             <Route 
                 path="/provider-register" 
                 element={
                   <ProtectedRoute>

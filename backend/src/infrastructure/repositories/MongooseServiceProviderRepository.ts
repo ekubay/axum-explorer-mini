@@ -29,6 +29,13 @@ export class MongooseServiceProviderRepository implements IServiceProviderReposi
     const docs = await this.providerModel.find({ type, isActive: true });
     return docs.map(doc => this.toEntity(doc));
   }
+  async findByVerificationStatus(status: string): Promise<ServiceProvider[]> {
+    const docs = await this.providerModel.find({ 
+      verificationStatus: status,
+      isActive: true 
+    });
+    return docs.map(doc => this.toEntity(doc));
+  }
 
   async save(provider: ServiceProvider): Promise<ServiceProvider> {
     if (provider.id) {

@@ -7,5 +7,6 @@ export interface IServiceProviderRepository {
   findByType(type: ProviderType): Promise<ServiceProvider[]>;
   findAll(): Promise<ServiceProvider[]>; // Add this
   save(provider: ServiceProvider): Promise<ServiceProvider>;
+  findByVerificationStatus(status: string): Promise<ServiceProvider[]>;
   updateVerificationStatus(id: string, status: string): Promise<ServiceProvider | null>;
 }

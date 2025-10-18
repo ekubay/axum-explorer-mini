@@ -43,11 +43,15 @@ export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
 };
 
-// Provider API - FIXED: Added missing export
+// providerAPI
 export const providerAPI = {
   register: (providerData) => api.post('/providers/register', providerData),
   list: (params = {}) => api.get('/providers', { params }),
   getById: (id) => api.get(`/providers/${id}`),
+  // Add admin methods
+  getPending: () => api.get('/admin/providers/pending'),
+  verify: (providerId) => api.put(`/admin/providers/${providerId}/verify`),
+  reject: (providerId) => api.put(`/admin/providers/${providerId}/reject`),
 };
 
 // Booking API

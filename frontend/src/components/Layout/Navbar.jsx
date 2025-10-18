@@ -37,6 +37,7 @@ const Navbar = () => {
             >
               Home
             </Link>
+
             <Link
               to="/providers"
               className={`px-3 py-2 rounded-md text-sm font-medium ${
@@ -47,6 +48,19 @@ const Navbar = () => {
             >
               Services
             </Link>
+
+            {isAuthenticated && user?.role === 'admin' && (
+              <Link
+                to="/admin"
+                className={`px-3 py-2 rounded-md text-sm font-medium ${
+                  location.pathname === '/admin'
+                    ? 'text-axum-green border-b-2 border-axum-green'
+                    : 'text-gray-700 hover:text-axum-green'
+                }`}
+              >
+                Admin
+              </Link>
+            )}
 
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">

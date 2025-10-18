@@ -8,6 +8,23 @@ export class ServiceProviderController {
     private providerService: ServiceProviderService
   ) {}
 
+async getPendingProviders(req: Request, res: Response): Promise<void> {
+    try {
+      // This would require a new method in the service to find pending providers
+      const providers = await this.providerService.getProvidersByStatus('pending');
+      
+      res.json({
+        success: true,
+        data: { providers }
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to fetch pending providers'
+      });
+    }
+  }
+
   async register(req: AuthRequest, res: Response): Promise<void> {
     try {
       const {
